@@ -2,7 +2,7 @@
    (command "torus" punto (* 11.5 multiplicador ) (* 1 multiplicador ) )
 )
 
-(DEFUN capa (nombre color)
+(defun capa (nombre color)
   (ENTMAKE (LIST
     (CONS 0 "LAYER")
     (CONS 100 "AcDbSymbolTableRecord")
@@ -15,6 +15,25 @@
   )
 )
 
+(defun cambiar_capa (nombe)
+
+)
+
+(defun seleccionar_todos_de_la_capa ()
+
+)
+
+(defun crear_agarre (pt pta multi)
+  (command "circle" pt (* multi 3) )
+  (setq circ (entlast))
+  (command "array" circ "" "P" "" pta 15 "" "y" "" )
+  
+)
+
+(defun crear_tapa (pt multi)
+  (command "cylinder" pt ( * multi 7.5 ) ( * multi 15 ))
+)
+
 (defun c:termo ()
 ; seteo de variables
   (setq
@@ -22,6 +41,32 @@
     altura (getreal "\n Ingrese la altura de la bottella: ")
     multiplicador ( / altura 100 )
   )
+  ;puntos auxiliares
+  (setq
+    punto_fin_cuerpo_cilindro ( list(
+      ( car  punto_de_insercion)
+      ( + ( cadr punto_de_insercion ) ( * multiplicador 70 ) ) ) )
+    punto_fin_cuerpo_oblicuo ( list(
+      ( car  punto_de_insercion)
+      ( + ( cadr punto_de_insercion ) ( * multiplicador 85 ) ) ) )
+    punto_fin_tapa ( list(
+      ( car  punto_de_insercion)
+      ( + ( cadr punto_de_insercion ) ( * multiplicador 100 ) ) ) )
+  )
+  ;mas putnos auxiliares, no se si los define on the fly
+  (setq
+    punto_fin_cuerpo_cilindro_horizontal ( list(
+      (+ ( car punto_fin_cuerpo_cilindro ) (* multiplicador 11.5 )) ;
+      (cadr punto_fin_cuerpo_cilindro )
+      (caddr punto_fin_cuerpo_cilindro )
+      ))
+    punto_fin_cuerpo_oblicuo_horizontal ( list(
+      (+ ( car punto_fin_cuerpo_oblicuo ) (* multiplicador 7.5 )) ;
+      (cadr punto_fin_cuerpo_oblicuo )
+      (caddr punto_fin_cuerpo_oblicuo )
+      ))
+    )
+
   ; seteo configuraciones
   (command "osmode" 0 )
   (command "surftab1" 20 )
@@ -44,7 +89,11 @@
   ;moverlo de capa
 
 
-
+  (cambiar_capa "aux")
+  ;creo un circulo
+  ;hago un array polar
+  ;selecciono todos los circulos o todo en la capa
+  ;extrude
 
   ; Creo toroides
   (toroide
@@ -66,14 +115,14 @@
   )
   (setq toroide_arriba ( entlast ) )
 
+  ;selecciono todo en la capa
+  ;substract de todo lo seleccionado
+  ;deprecate
   (command "subtract" cuerpo "" toroide_arriba toroide_abajo "")
 
-  ; deprecate
-  ;(command "ucs" "w")
-
-  ;creo los circulos
-  ;moverlos de capa
-  ;seleccionarlos todos dentro de una capa
-  ;substraer
-  
+  ()
+  ;se crea la tapa y se mueve a su capa
+  ( crear_tapa punto_fin_cuerpo_oblicuo )
+  (setq tapa (entlast))
+  (command "change" tapa "" "p" "la" "TAPA" "")
   )
