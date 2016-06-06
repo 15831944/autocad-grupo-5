@@ -16,18 +16,24 @@
 )
 
 (defun cambiar_capa (nombe)
-
+  (setvar "CLAYER" nombre)
 )
 
 (defun seleccionar_todos_de_la_capa ()
-
+  ;TODO
 )
 
-(defun crear_agarre (pt pta multi)
+(defun crear_agarre (pt pta multi cuerpo)
+  (setq oldLayer ( getvar "CLAYER" ) ) ;tomo la capa actual
+  (cambiar_capa "AUX")
   (command "circle" pt (* multi 3) )
   (setq circ (entlast))
-  (command "array" circ "" "P" "" pta 15 "" "y" "" )
-  
+  (command "_.array" circ "" "P" pta 15 "" "y" ) ;creo el array
+  (setq circ ( ssget "X" '(( 0 . "CIRCLE" )) ) ) ;almaceno todos los circulos
+  (command "extrude" circ "" (* multi 42) 0 ) ;hago el extrude
+  (setq todo_lo_de_la_capa (seleccionar_todos_de_la_capa "AUX")) ;selecciono todo en la capa
+  (command "subtract" cuerpo "" todo_lo_de_la_capa "") ;lo substraigo
+  (cambiar_capa oldLayer) ;regreso a la capa de donde vine
 )
 
 (defun crear_tapa (pt multi)
@@ -44,14 +50,15 @@
   ;puntos auxiliares
   (setq
     punto_fin_cuerpo_cilindro ( list(
-      ( car  punto_de_insercion)
-      ( + ( cadr punto_de_insercion ) ( * multiplicador 70 ) ) ) )
+      ( car  punto_de_insercion )
+      ( cadr punto_de_insercion )
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 70 ) ) ) )
     punto_fin_cuerpo_oblicuo ( list(
-      ( car  punto_de_insercion)
-      ( + ( cadr punto_de_insercion ) ( * multiplicador 85 ) ) ) )
+      ( car  punto_de_insercion )
+      ( cadr punto_de_insercion )
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 85 ) ) ) )
     punto_fin_tapa ( list(
-      ( car  punto_de_insercion)
-      ( + ( cadr punto_de_insercion ) ( * multiplicador 100 ) ) ) )
+      ( car  punto_de_insercion )(list ) ( * multiplicador 100 ) ) ) )
   )
   ;mas putnos auxiliares, no se si los define on the fly
   (setq
@@ -65,6 +72,16 @@
       (cadr punto_fin_cuerpo_oblicuo )
       (caddr punto_fin_cuerpo_oblicuo )
       ))
+    punto_circulo_agarre ( list(
+      (+ ( car punto_de_insercion ) (* multiplicador 11.5 ))
+      ( cadr punto_de_insercion )
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 14 ) )
+      ))
+      punto_de_giro_array ( list(
+        ( car punto_de_insercion )
+        ( cadr punto_de_insercion )
+        ( + ( caddr punto_de_insercion ) ( * multiplicador 14 ) )
+        ))
     )
 
   ; seteo configuraciones
@@ -85,15 +102,18 @@
 ;creo el cuerpo
   (command "cylinder" punto_de_insercion ( * 11.5 multiplicador ) ( * 70 multiplicador ) )
   ;radio por multi y altura por multi
-    (setq cuerpo (entlast))
-  ;moverlo de capa
+  (setq cuerpo (entlast))
+  (command "change" cuerpo "" "p" "la" "CUERPO" "")
 
 
-  (cambiar_capa "aux")
-  ;creo un circulo
-  ;hago un array polar
-  ;selecciono todos los circulos o todo en la capa
-  ;extrude
+  (crear_agarre
+    punto_circulo_agarre
+    punto_de_giro_array
+    multiplicador
+    cuerpo)
+  ;pt punto de insercion del circulo
+  ;pta punto de giro del array
+
 
   ; Creo toroides
   (toroide
