@@ -1,0 +1,5 @@
+(DEFUN C:CON ()
+  (SETQ	LISTA  (CONS 62 228)
+	LISTA1 (LIST 62 228)
+  )
+)

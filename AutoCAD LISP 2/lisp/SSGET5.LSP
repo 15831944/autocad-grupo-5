@@ -1,0 +1,5 @@
+(DEFUN C:SS5 ()
+  (alert "Seleccione las entidades para cambiar a la capa AUX")
+  (SETQ ENT (SSGET '((0 . "CIRCLE")(62 . 3))))
+  (command "change" ent "" "p" "la" "aux" "c" "bylayer" "")
+)

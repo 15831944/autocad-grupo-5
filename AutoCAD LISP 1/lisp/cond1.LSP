@@ -1,0 +1,28 @@
+(defun c:barea ()
+  (initget 128)
+  (setq p1 (getpoint "\nSeleccione polilinea/Marque puntos/
+  			<haga click dentro de poligono>... "))
+  (cond
+    ((= (quote LIST) (type p1))  (punto))
+    ((= (quote STR) (type p1))
+      (cond
+	((= (strcase p1) "S") (seleccion))
+	((= (strcase p1) "M") (marca))
+	(t (prompt "\nEntrada Invalida")(exit))))
+    (t (prompt "\nEntrada Invalida")(exit))
+    )
+  
+)
+(defun punto ()
+  (setq capa (getvar "clayer"))
+  (setvar "clayer" "0")
+  (command "boundary" p1 "")
+  (command "area" "o" "l")
+  (setq med (rtos (getvar "area") 2 2))
+  (command "erase" "l" "")
+  (setvar "clayer" capa)
+  (alert (strcat "El area es: " med " m2"))
+)
+(defun seleccion () (alert "seleccion"))
+(defun marca () (alert "marca"))
+(defun despedida () (alert "Gracias por usar el programa"))

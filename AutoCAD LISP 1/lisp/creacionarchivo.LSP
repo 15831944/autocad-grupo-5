@@ -1,0 +1,7 @@
+(defun c:crea ()
+  (setq	archivo	(open "d:/facultad/textos/esc.txt" "W")
+	primer	(WRITE-line "0.25" archivo)
+	SEGUNDA	(WRITE-line "0.19" archivo)
+  )
+  (close archivo)
+)

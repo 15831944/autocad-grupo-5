@@ -1,0 +1,16 @@
+auto00.sld
+auto01.sld
+auto02.sld
+auto03.sld
+auto10.sld
+auto11.sld
+auto12.sld
+auto13.sld
+auto20.sld
+auto21.sld
+auto22.sld
+auto23.sld
+auto30.sld
+auto31.sld
+auto32.sld
+auto33.sld

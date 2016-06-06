@@ -1,0 +1,7 @@
+(defun c:esc ()
+  (setq osmodo (getvar "osmode"))
+  (setvar "osmode" 0)
+  (setq	p1     (getpoint "\nIngrese la base del escalon..."))
+  (command "line" p1 "@.18<90" "@.28<0" "")
+  (setvar "osmode" osmodo)
+)

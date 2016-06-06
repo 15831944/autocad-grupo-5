@@ -1,0 +1,98 @@
+(defun c:rec ()
+  (invar)
+  (setq p1 (getpoint "\nIngrese el primer punto... ")
+	p2 (getpoint "\nIngrese el primer punto... ")
+	p3 (getpoint "\nIngrese el primer punto... ")
+	p4 (getpoint "\nIngrese el primer punto... ")
+  )
+  (command "line" p1 p2 p3 p4 "c")
+  (outvar)
+)
+(defun invar ()
+  (setq osmodo (getvar "osmode"))
+  (SETvar "osmode" 0)
+)
+(defun outvar ()
+  (setvar "osmode" osmodo)
+)
+
+
+(defun c:ec ()
+  (setq nro (getint "\nIngrese el valor de X... ")
+          y (+ (* 5 nro) 2)
+  )
+  (setq resp (strcat "RESULTADO: " (ITOA Y)))
+  (ALERT RESP)	
+)
+
+
+(defun c:rec2 ()
+  (setq p1 (getpoint "\nIngrese el primer punto: ")
+	p3 (getpoint "\nIngrese el segundo punto: ")
+  )
+  (setq p1x (car p1)
+        p1y (cadr p1)
+	p3x (car p3)
+	p3y (cadr p3)
+  )
+  (setq p2 (list p3x p1y)
+	p4 (list p1x p3y)
+  )
+  (setq dist (/ (distance p1 p3) 2)
+        angulo (angle p1 p3)
+        p5 (polar p1 angulo dist)
+  )
+  (command "_pline" p1 p2 p3 p4 "c")
+  (COMMAND "area" "o" "l")
+  (setq medida (STRCAT "EL AREA ES: " (rtos (getvar "area") 2 2) " m2"))
+  (command "text" "j" "m" p5 (* dist 0.02) 0 medida)
+)
+
+
+
+(defun c:val (/ resp)
+  (initget "A B")
+  (setq resp (getkword " Digite una opcion.... "))
+  (if (= resp "A")
+    (progn
+      (setq resp2 (strcat "Respuesta: " resp))
+      (alert resp2)
+    )
+    (progn
+      (setq resp2 (strcat "Respuesta: " resp))
+      (alert resp2)
+    )  
+  )  
+)
+
+
+
+
+(defun c:barea ()
+  (initget 128)
+  (setq p1 (getpoint "\nSeleccione polilinea/Marque puntos/
+  			<haga click dentro de poligono>... "))
+  (cond
+    ((= (quote LIST) (type p1))  (punto))
+    ((= (quote STR) (type p1))
+      (cond
+	((= (strcase p1) "S") (seleccion))
+	((= (strcase p1) "M") (marca))
+	(t (prompt "\nEntrada Invalida")(exit))))
+    (t (prompt "\nEntrada Invalida")(exit))
+    )
+  
+)
+(defun punto ()
+  (setq capa (getvar "clayer"))
+  (setvar "clayer" "0")
+  (command "boundary" p1 "")
+  (command "area" "o" "l")
+  (setq med (rtos (getvar "area") 2 2))
+  (command "erase" "l" "")
+  (setvar "clayer" capa)
+  (alert (strcat "El area es: " med " m2"))
+)
+
+(defun seleccion () (alert "seleccion"))
+(defun marca () (alert "marca"))

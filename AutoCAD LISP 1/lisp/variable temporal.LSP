@@ -1,0 +1,7 @@
+(defun c:val (/ resp)
+  (initget "A B")
+  (setq resp (getkword "Digite alguna opcion... ")
+      (alert resp)
+      (alert resp)
+  )
+)

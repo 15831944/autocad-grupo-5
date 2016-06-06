@@ -1,0 +1,12 @@
+(DEFUN C:REC1 ()
+  (setq osmodo (getvar "osmode"))
+  (setvar "osmode" 0)
+  (setq p1 (getpoint "\nIngrese el primer punto... ")
+	p2 (getpoint "\nIngrese el segundo punto... ")
+	p3 (getpoint "\nIngrese el tercer punto... ")
+	p4 (getpoint "\nIngrese el cuarto punto... ")
+  )
+  (command "line" p1 p2 p3 p4 "c")
+  (setvar "osmode" osmodo)
+)
+  

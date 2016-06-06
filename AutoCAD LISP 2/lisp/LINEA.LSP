@@ -1,0 +1,4 @@
+(DEFUN C:LINEA ()
+  (ALERT "VA A CREAR UNA LINEA")
+  (ENTMAKE '((0 . "LINE")(10 0 0 0)(11 100 100)))
+)

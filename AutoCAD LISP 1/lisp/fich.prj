@@ -1,0 +1,16 @@
+;;; VLisp project file [V2.0] fich saved to:[D:/facultad] at:[7/20/06] 
+(VLISP-PROJECT-LIST
+  :name
+  fich
+  :own-list
+  ("practico")
+  :fas-directory
+  nil
+  :tmp-directory
+  nil
+  :project-keys
+  (:BUILD (:standard))
+  :context-id
+  :AUTOLISP
+)
+;;; EOF
