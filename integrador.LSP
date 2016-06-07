@@ -49,7 +49,7 @@
   (cambiar_capa oldLayer)
 )
 
-(defun crear_oblicuo (pta ptb ptc ptd multi)
+(defun crear_oblicuo (pta ptb ptc ptd)
   ; forma de los puntos
   ; ptd--ptc
   ; |       \
@@ -158,3 +158,39 @@
   ;se crea la tapa en su capa
   ( crear_tapa punto_fin_cuerpo_oblicuo multiplicador )
   )
+
+;Funcion de prueba de funcionamiento de func. auxiliares (toroide, oblicuo, array)
+(defun c:prueba_toroide ()
+  (setq
+    pt_i (getpoint "\n Ingrese punto de insercion de toroide")
+    multi (getreal "\n Ingrese el multiplicador (0;1]: ")
+  )
+  (command "torus" pt_i (* 11.5 multi ) (* 1 multi ) )
+)
+
+(defun c:prueba_array ()
+  (setq
+    pt_i (getpoint "\n Ingrese punto de creacion del circulo")
+    pt_a (getpoint "\n Ingrese punto de giro del arreglo")
+    cant (getreal "\n Ingrese la cantidad total de entidades: ")
+    multi (getreal "\n Ingrese el multiplicador (0;1]: ")
+  )
+  (command "circle" pt_i (* multi 3) ) ;creo el circulo inicial
+  (setq circ (entlast)) ;retengo su identidad
+  (command "_.array" circ "" "P" pt_a cant "" "y" ) ;creo el array
+  (setq circ ( ssget "X" '(( 0 . "CIRCLE" )) ) ) ;almaceno todos los circulos
+  (command "extrude" circ "" (* multi 42) 0 )
+)
+
+(defun c:prueba_oblicuo ()
+  (setq
+    pt_a (getpoint "\n Ingrese punto a")
+    pt_b (getpoint "\n Ingrese punto b")
+    pt_c (getpoint "\n Ingrese punto c")
+    pt_d (getpoint "\n Ingrese punto d")
+    altura (getreal "\n Ingrese la altura de la bottella: ")
+  )
+  (command "pline" pt_a pt_b pt_c pt_d pt_a "Close")
+  (setq _oblic (entlast))
+  ;(command "revolve" _oblic pta ptd ) ---------------> TODO estoy adivinando como se hace
+)
