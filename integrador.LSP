@@ -19,25 +19,48 @@
   (setvar "CLAYER" nombre)
 )
 
-(defun seleccionar_todos_de_la_capa ()
-  (setq c (ssget "X" '((8 . "aux")) ))
-)
-
-(defun crear_agarre (pt pta multi cuerpo)
+(defun crear_agarre (pt_t1 pt_t2 ptc pta multi cuerpo)
+;Magic Function
+;debería hacer todo solo
   (setq oldLayer ( getvar "CLAYER" ) ) ;tomo la capa actual
-  (cambiar_capa "AUX")
-  (command "circle" pt (* multi 3) )
-  (setq circ (entlast))
+  (cambiar_capa "AUX") ;cambio de capa
+
+  ;; ME MANTENGO EN LA CAPA AUX
+
+  (command "circle" ptc (* multi 3) ) ;creo el circulo inicial
+  (setq circ (entlast)) ;retengo su identidad
   (command "_.array" circ "" "P" pta 15 "" "y" ) ;creo el array
   (setq circ ( ssget "X" '(( 0 . "CIRCLE" )) ) ) ;almaceno todos los circulos
   (command "extrude" circ "" (* multi 42) 0 ) ;hago el extrude
-  (setq todo_lo_de_la_capa (seleccionar_todos_de_la_capa "AUX")) ;selecciono todo en la capa
-  (command "subtract" cuerpo "" todo_lo_de_la_capa "") ;lo substraigo
+
+  (toroide pt_t1 multi);creo toroide de abajo
+  (toroide pt_t2 multi);creo toroide de arriba
+
+
+  (setq capa_aux (ssget "X" '((8 . "AUX")))) ;selecciono todo en la capa
+  (command "subtract" cuerpo "" capa_aux "") ;lo substraigo
   (cambiar_capa oldLayer) ;regreso a la capa de donde vine
 )
 
 (defun crear_tapa (pt multi)
+  (setq oldLayer ( getvar "CLAYER" ) ) ;tomo la capa actual
+  (cambiar_capa "TAPA") ;cambio de capa
   (command "cylinder" pt ( * multi 7.5 ) ( * multi 15 ))
+  (cambiar_capa oldLayer)
+)
+
+(defun crear_oblicuo (pta ptb ptc ptd multi)
+  ; forma de los puntos
+  ; ptd--ptc
+  ; |       \
+  ; |        \
+  ; pta_____ptb
+  (setq oldLayer ( getvar "CLAYER" ) ) ;tomo la capa actual
+  (cambiar_capa "CUERPO") ;cambio de capa
+  (command "pline" pta ptb ptc ptd pta "Close")
+  (setq _oblic (entlast))
+  ;;(command "revolve" _oblic pta ptd ) ---------------> TODO estoy adivinando como se hace
+  (cambiar_capa oldLayer)
 )
 
 (defun c:termo ()
@@ -92,7 +115,6 @@
   (command "surftab2" 20 )
   (command "isolines" 20 )
 
-
   ;;;crear capa
   (capa "TAPA" 1)
   (capa "CUERPO" 4)
@@ -107,44 +129,32 @@
   (setq cuerpo (entlast))
   (command "change" cuerpo "" "p" "la" "CUERPO" "")
 
-
   (crear_agarre
+    ;punto toroide 1
+    (list (car punto_de_insercion) (cadr punto_de_insercion) (+ (caddr punto_de_insercion)(* multiplicador 7)))
+    ;punto toroide 2
+    (list (car punto_de_insercion) (cadr punto_de_insercion ) (+ (caddr punto_de_insercion)(* multiplicador 63 )))
+    ;punto de insercion del circulo
     punto_circulo_agarre
+    ;pta punto de giro del array
     punto_de_giro_array
     multiplicador
     cuerpo)
-  ;pt punto de insercion del circulo
-  ;pta punto de giro del array
 
-
-  ; Creo toroides
-  (toroide
-    (list
-      ( car punto_de_insercion )
-      ( cadr punto_de_insercion )
-      ( + ( caddr punto_de_insercion ) ( * multiplicador 7 ) )
-    )
+  ;se crea parte oblicua
+  (crear_oblicuo
+    punto_fin_cuerpo_cilindro
+    punto_fin_cuerpo_cilindro_horizontal
+    punto_fin_cuerpo_oblicuo_horizontal
+    punto_fin_cuerpo_oblicuo
     multiplicador
-  )
-  (setq toroide_abajo ( entlast ) )
-  (toroide
-    (list
-      ( car punto_de_insercion)
-      ( cadr punto_de_insercion )
-      (+ (caddr punto_de_insercion) (* multiplicador 63 ) )
     )
-    multiplicador
-  )
-  (setq toroide_arriba ( entlast ) )
 
-  ;selecciono todo en la capa
-  ;substract de todo lo seleccionado
-  ;deprecate
-  (command "subtract" cuerpo "" toroide_arriba toroide_abajo "")
+  ;No debería haber otra cosa que el cilindro de cuerpo con los huecos hechos y
+  ;el oblicuo, por lo que agarro todo y le hago un union
+  (setq capa_cuerpo (ssget "X" '((8 . "CUERPO"))))
+  (command "union" capa_cuerpo "" )
 
-  ()
-  ;se crea la tapa y se mueve a su capa
-  ( crear_tapa punto_fin_cuerpo_oblicuo )
-  (setq tapa (entlast))
-  (command "change" tapa "" "p" "la" "TAPA" "")
+  ;se crea la tapa en su capa
+  ( crear_tapa punto_fin_cuerpo_oblicuo multiplicador )
   )
