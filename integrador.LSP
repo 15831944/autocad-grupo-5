@@ -20,7 +20,7 @@
 )
 
 (defun seleccionar_todos_de_la_capa ()
-  ;TODO
+  (setq c (ssget "X" '((8 . "aux")) ))
 )
 
 (defun crear_agarre (pt pta multi cuerpo)
@@ -58,7 +58,9 @@
       ( cadr punto_de_insercion )
       ( + ( caddr punto_de_insercion ) ( * multiplicador 85 ) ) ) )
     punto_fin_tapa ( list(
-      ( car  punto_de_insercion )(list ) ( * multiplicador 100 ) ) ) )
+      ( car  punto_de_insercion )
+      ( cadr punto_de_insercion )
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 100 ) ) ) )
   )
   ;mas putnos auxiliares, no se si los define on the fly
   (setq
