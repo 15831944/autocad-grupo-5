@@ -50,18 +50,19 @@
 )
 
  ;; TIENE PROBLEMAS, CREO QUE ES POR EL UCS
-(defun crear_oblicuo ( pt_a pt_b pt_c pt_d )
+(defun crear_oblicuo ( pt_a pt_b pt_c multi )
   ; forma de los puntos
   ; ptd--ptc
   ; |       \
   ; |        \
   ; pta_____ptb
   (setq oldLayer ( getvar "CLAYER" ) ) ;tomo la capa actual
-  (cambiar_capa "TAPA") ;cambio de capa
-  (
-  (command "pline" pt_a pt_b pt_c pt_d pt_a "Close")
+  (cambiar_capa "CUERPO") ;cambio de capa
+  (command "ucs" "3p" pt_a pt_b pt_c )
+  (command "pline" (list 0 0 0) (list (* 11.5 multi) 0 0) (list (* 7.5 multi) (* 15 multi) 0) (list 0 (* 15 multi) 0) (list 0 0 0) "Close")
   (setq _oblic (entlast))
-  (command "revolve" _oblic "" pt_a pt_d "" )
+  (command "revolve" _oblic "" (list 0 0 0) (list 0 (* 15 multi) 0) "" )
+  (command "ucs" "" )
   (cambiar_capa oldLayer) ;regreso a la capa de donde vine
 )
 
@@ -142,11 +143,11 @@
     cuerpo)
 
   ;se crea parte oblicua
-  (oblicuo
+  (crear_oblicuo
     punto_fin_cuerpo_cilindro
     punto_fin_cuerpo_cilindro_horizontal
-    punto_fin_cuerpo_oblicuo_horizontal
-    punto_fin_cuerpo_oblicuo )
+    punto_fin_cuerpo_oblicuo
+    multiplicador )
 
   ;No debería haber otra cosa que el cilindro de cuerpo con los huecos hechos y
   ;el oblicuo, por lo que agarro todo y le hago un union
