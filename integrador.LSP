@@ -15,7 +15,7 @@
   )
 )
 
-(defun cambiar_capa (nombe)
+(defun cambiar_capa (nombre)
   (setvar "CLAYER" nombre)
 )
 
@@ -27,7 +27,7 @@
 
   ;; ME MANTENGO EN LA CAPA AUX
 
-  (command "circle" ptc (* multi 3) ) ;creo el circulo inicial
+  (command "circle" ptc (* multi 1.5) ) ;creo el circulo inicial
   (setq circ (entlast)) ;retengo su identidad
   (command "_.array" circ "" "P" pta 15 "" "y" ) ;creo el array
   (setq circ ( ssget "X" '(( 0 . "CIRCLE" )) ) ) ;almaceno todos los circulos
@@ -49,64 +49,67 @@
   (cambiar_capa oldLayer)
 )
 
-(defun crear_oblicuo (pta ptb ptc ptd)
+ ;; TIENE PROBLEMAS, CREO QUE ES POR EL UCS
+(defun crear_oblicuo ( pt_a pt_b pt_c pt_d )
   ; forma de los puntos
   ; ptd--ptc
   ; |       \
   ; |        \
   ; pta_____ptb
   (setq oldLayer ( getvar "CLAYER" ) ) ;tomo la capa actual
-  (cambiar_capa "CUERPO") ;cambio de capa
-  (command "pline" pta ptb ptc ptd pta "Close")
+  (cambiar_capa "TAPA") ;cambio de capa
+  (
+  (command "pline" pt_a pt_b pt_c pt_d pt_a "Close")
   (setq _oblic (entlast))
-  ;;(command "revolve" _oblic pta ptd ) ---------------> TODO estoy adivinando como se hace
-  (cambiar_capa oldLayer)
+  (command "revolve" _oblic "" pt_a pt_d "" )
+  (cambiar_capa oldLayer) ;regreso a la capa de donde vine
 )
 
 (defun c:termo ()
 ; seteo de variables
   (setq
-    punto_de_insercion (getpoint "\n Ingrese punto de insercion")
-    altura (getreal "\n Ingrese la altura de la bottella: ")
+    punto_de_insercion (getpoint "\n Ingrese punto de insercion: ")
+    altura (getreal "\n Ingrese la altura del termo: ")
     multiplicador ( / altura 100 )
   )
   ;puntos auxiliares
   (setq
-    punto_fin_cuerpo_cilindro ( list(
+    punto_fin_cuerpo_cilindro ( list
       ( car  punto_de_insercion )
       ( cadr punto_de_insercion )
-      ( + ( caddr punto_de_insercion ) ( * multiplicador 70 ) ) ) )
-    punto_fin_cuerpo_oblicuo ( list(
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 70 ) ) )
+    
+    punto_fin_cuerpo_oblicuo ( list
       ( car  punto_de_insercion )
       ( cadr punto_de_insercion )
-      ( + ( caddr punto_de_insercion ) ( * multiplicador 85 ) ) ) )
-    punto_fin_tapa ( list(
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 85 ) ) )
+    
+    punto_fin_tapa ( list
       ( car  punto_de_insercion )
       ( cadr punto_de_insercion )
-      ( + ( caddr punto_de_insercion ) ( * multiplicador 100 ) ) ) )
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 100 ) ) )
   )
   ;mas putnos auxiliares, no se si los define on the fly
   (setq
-    punto_fin_cuerpo_cilindro_horizontal ( list(
-      (+ ( car punto_fin_cuerpo_cilindro ) (* multiplicador 11.5 )) ;
+    punto_fin_cuerpo_cilindro_horizontal ( list
+      (+ ( car punto_fin_cuerpo_cilindro ) (* multiplicador 11.5 ) ) ;
       (cadr punto_fin_cuerpo_cilindro )
-      (caddr punto_fin_cuerpo_cilindro )
-      ))
-    punto_fin_cuerpo_oblicuo_horizontal ( list(
-      (+ ( car punto_fin_cuerpo_oblicuo ) (* multiplicador 7.5 )) ;
+      (caddr punto_fin_cuerpo_cilindro ) )
+    
+    punto_fin_cuerpo_oblicuo_horizontal ( list
+      (+ ( car punto_fin_cuerpo_oblicuo ) (* multiplicador 7.5 ) ) ;
       (cadr punto_fin_cuerpo_oblicuo )
-      (caddr punto_fin_cuerpo_oblicuo )
-      ))
-    punto_circulo_agarre ( list(
+      (caddr punto_fin_cuerpo_oblicuo ) )
+    
+    punto_circulo_agarre ( list
       (+ ( car punto_de_insercion ) (* multiplicador 11.5 ))
       ( cadr punto_de_insercion )
-      ( + ( caddr punto_de_insercion ) ( * multiplicador 14 ) )
-      ))
-      punto_de_giro_array ( list(
+      ( + ( caddr punto_de_insercion ) ( * multiplicador 14 ) ) )
+    
+    punto_de_giro_array ( list
         ( car punto_de_insercion )
         ( cadr punto_de_insercion )
-        ( + ( caddr punto_de_insercion ) ( * multiplicador 14 ) )
-        ))
+        ( + ( caddr punto_de_insercion ) ( * multiplicador 14 ) ) )
     )
 
   ; seteo configuraciones
@@ -119,9 +122,6 @@
   (capa "TAPA" 1)
   (capa "CUERPO" 4)
   (capa "aux" 2)
-
-  ;;; deprecate
-  ;;; (command "ucs" "X" -90 )
 
 ;creo el cuerpo
   (command "cylinder" punto_de_insercion ( * 11.5 multiplicador ) ( * 70 multiplicador ) )
@@ -142,22 +142,20 @@
     cuerpo)
 
   ;se crea parte oblicua
-  (crear_oblicuo
+  (oblicuo
     punto_fin_cuerpo_cilindro
     punto_fin_cuerpo_cilindro_horizontal
     punto_fin_cuerpo_oblicuo_horizontal
-    punto_fin_cuerpo_oblicuo
-    multiplicador
-    )
+    punto_fin_cuerpo_oblicuo )
 
   ;No debería haber otra cosa que el cilindro de cuerpo con los huecos hechos y
   ;el oblicuo, por lo que agarro todo y le hago un union
-  (setq capa_cuerpo (ssget "X" '((8 . "CUERPO"))))
-  (command "union" capa_cuerpo "" )
+  (setq todo (ssget "X" ))
+  (command "union" todo "" )
 
   ;se crea la tapa en su capa
   ( crear_tapa punto_fin_cuerpo_oblicuo multiplicador )
-  )
+)
 
 ;Funcion de prueba de funcionamiento de func. auxiliares (toroide, oblicuo, array)
 (defun c:prueba_toroide ()
@@ -172,7 +170,7 @@
   (setq
     pt_i (getpoint "\n Ingrese punto de creacion del circulo")
     pt_a (getpoint "\n Ingrese punto de giro del arreglo")
-    cant (getreal "\n Ingrese la cantidad total de entidades: ")
+    cant (getint "\n Ingrese la cantidad total de entidades: ")
     multi (getreal "\n Ingrese el multiplicador (0;1]: ")
   )
   (command "circle" pt_i (* multi 3) ) ;creo el circulo inicial
@@ -184,13 +182,11 @@
 
 (defun c:prueba_oblicuo ()
   (setq
-    pt_a (getpoint "\n Ingrese punto a")
-    pt_b (getpoint "\n Ingrese punto b")
-    pt_c (getpoint "\n Ingrese punto c")
-    pt_d (getpoint "\n Ingrese punto d")
-    altura (getreal "\n Ingrese la altura de la bottella: ")
-  )
+    pt_a (getpoint "\n Ingrese punto A: ")
+    pt_b (getpoint "\n Ingrese punto B: ")
+    pt_c (getpoint "\n Ingrese punto C: ")
+    pt_d (getpoint "\n Ingrese punto D: ") )
   (command "pline" pt_a pt_b pt_c pt_d pt_a "Close")
   (setq _oblic (entlast))
-  ;(command "revolve" _oblic pta ptd ) ---------------> TODO estoy adivinando como se hace
+  (command "revolve" _oblic "" pt_a pt_d "" )
 )
