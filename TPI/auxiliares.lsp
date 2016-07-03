@@ -1,0 +1,28 @@
+(defun crear_capa (nombre color)
+  (entmake (list
+    (cons 0 "LAYER")
+    (cons 100 "AcDbSymbolTableRecord")
+    (cons 100 "AcDbLayerTableRecord")
+    (cons 2 nombre)
+    (cons 70 0)
+    (cons 62 color)
+    (cons 6 "CONTINUOUS")
+    )
+  )
+)
+
+(defun capa (nombre)
+  (setvar "CLAYER" nombre)
+)
+
+(defun seleccionar_todos_de_una_capa (capa)
+  (ssget "X" '((8 . capa)) )
+)
+
+(defun limpiar_capa_cero ()
+  (setq all_0 (ssget "X" '((8 . "0")) ))
+  (command "_.erase" all_0 "")
+)
+(defun cambiar_capa_de_objeto (objeto capa_destino)
+  (command "change" objeto "" "p" "la" capa_destino "")
+)
