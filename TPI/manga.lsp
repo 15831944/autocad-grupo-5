@@ -1,6 +1,5 @@
 ;API
 (defun manga (pt_i contorno_de_sisa alto_de_sisa largo_de_manga)
-  (load "auxiliares.lsp" "\nNo se pudo cargar la libreria de funciones")
   ;(setq oldLayer (getvar"CLAYER"))
   ;(capa "0")
   (setq

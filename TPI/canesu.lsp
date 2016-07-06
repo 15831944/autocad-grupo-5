@@ -19,7 +19,7 @@
         )
       (setq
         pt_dir_hombro_1 (list (car pt_hombro_1) (cadr pt_i) )
-        pt_dir_hombro_2 (list (car pt_hombro_2) (cadr pt_i) )
+        pt_dir_hombro_2 (list (car pt_hombro_2) (+ (cadr pt_i) (/ alto_de_canesu 2)) );si es muy cerca del otro punto me lo captura
         )
 
       (command "pline" pt_hombro_2 pt_cuello_2 "A" "D" pt_cuello_bajo pt_cuello_bajo pt_cuello_1 "L" pt_hombro_1 "A" "D" pt_dir_hombro_1 pt_i "L" pt_f_horizontal "")
