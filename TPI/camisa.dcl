@@ -1,62 +1,70 @@
 no_name : dialog {
     label="Constructor de Camisas";
 
-        :edit_box {
-            key        = "ContornoCuello" ;
-            label      = "Contorno de Cuello" ;
-            value      = "" ;
-            width      = 20.9 ;
-            height     =  1.1 ;
-            edit_width = 14.3 ;
-            alignment     = top ;
-        }
-        :edit_box {
-            key        = "AnchoHombro" ;
-            label      = "Ancho de Hombro" ;
-            value      = "" ;
-            width      = 20.9 ;
-            height     =  1.1 ;
-            edit_width = 14.3 ;
-            alignment     = top ;
-        }
-        :edit_box {
-            key        = "LargoManga" ;
-            label      = "Largo de Manga" ;
-            value      = "" ;
-            width      = 20.9 ;
-            height     =  1.1 ;
-            edit_width = 14.3 ;
-            alignment     = top ;
-        }
-        :edit_box {
-            key        = "AltoSisa" ;
-            label      = "Alto de Sisa" ;
-            value      = "" ;
-            width      = 20.9 ;
-            height     =  1.1 ;
-            edit_width = 14.3 ;
-            alignment     = top ;
-        }
-        :edit_box {
-            key        = "ContornoTorax" ;
-            label      = "Contorno de Torax" ;
-            value      = "" ;
-            width      = 20.9 ;
-            height     =  1.1 ;
-            edit_width = 14.3 ;
-            alignment     = top ;
-        }
-        :edit_box {
-            key        = "LargoTotal" ;
-            label      = "Largo Total" ;
-            value      = "" ;
-            width      = 20.9 ;
-            height     =  1.1 ;
-            edit_width = 14.3 ;
-            alignment     = top ;
-        }
-    : text { key= "kmt_lite_vera"; label= "Desarrollado para la catedra de" ;}
-    : text { key= "kmt_lite_verb"; label= "AutoCAD avanzado FICH - UNL" ;}
-    : text { key= "kmt_lite_verc"; label= "Juan Manuel Cruz" ;}
+    :edit_box {
+        key        = "_contorno_cuello" ;
+        label      = "Contorno de Cuello" ;
+        value      = 0 ;
+        width      = 21.4 ;
+        height     =  1.1 ;
+        edit_width = 14.3 ;
+        alignment     = top ;
+    }
+    :edit_box {
+        key        = "_ancho_hombro" ;
+        label      = "Ancho de Hombro" ;
+        value      = 0 ;
+        width      = 21.4 ;
+        height     =  1.1 ;
+        edit_width = 14.3 ;
+        alignment     = top ;
+    }
+    :edit_box {
+        key        = "_largo_manga" ;
+        label      = "Largo de Manga" ;
+        value      = 0 ;
+        width      = 21.4 ;
+        height     =  1.1 ;
+        edit_width = 14.3 ;
+        alignment     = top ;
+    }
+    :edit_box {
+        key        = "_alto_sisa" ;
+        label      = "Alto de Sisa" ;
+        value      = 0 ;
+        width      = 21.4 ;
+        height     =  1.1 ;
+        edit_width = 14.3 ;
+        alignment     = top ;
+    }
+    :edit_box {
+        key        = "_contorno_sisa" ;
+        label      = "Contorno de Sisa" ;
+        value      = 0 ;
+        width      = 21.4 ;
+        height     =  1.1 ;
+        edit_width = 14.3 ;
+        alignment     = top ;
+    }
+    :edit_box {
+        key        = "_contorno_torax" ;
+        label      = "Contorno de Torax" ;
+        value      = 0 ;
+        width      = 21.4 ;
+        height     =  1.1 ;
+        edit_width = 14.3 ;
+        alignment     = top ;
+    }
+    :edit_box {
+        key        = "_largo_talle" ;
+        label      = "Largo de Talle" ;
+        value      = 0 ;
+        width      = 21.4 ;
+        height     =  1.1 ;
+        edit_width = 14.3 ;
+        alignment     = top ;
+    }
+    : text { key= "kmt_lite_vera"; label= "AutoCAD avanzado FICH - UNL" ;}
+    : text { key= "kmt_lite_verb"; label= "Juan Manuel Cruz" ;}
 ok_cancel;
 }
