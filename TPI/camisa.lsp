@@ -26,7 +26,7 @@
 (defun c:camisas ()
   (command "OSNAP" "OFF")
   (prompt "\nSolo por si acaso, desactivamos el OSNAP por vos")
-  ;(LoadDialog_no_name)
+  (LoadDialog_no_name)
   (load "auxiliares.lsp" "\nNo se pudo cargar la libreria de funciones")
   (load "manga.lsp" "\nNo se pudo cargar la libreria de manga")
   (load "canesu.lsp" "\nNo se pudo cargar la libreria de canesu")
