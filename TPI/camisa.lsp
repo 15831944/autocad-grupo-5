@@ -75,12 +75,12 @@
   (obtener_datos)
   (setq
     pt_i_trasero (list 0 0)
-    pt_i_delantero_1 (list ( + ( / _contorno_torax 4 ) 3 ) 0 )
+    pt_i_delantero_1 (list (* ( + ( / _contorno_torax 4 ) 3 ) 2) 0 )
     pt_i_delantero_2 (list (+ (car pt_i_delantero_1) (+ (/ _contorno_torax 4 ) 6 ) ) (cadr pt_i_delantero_1 ) )
     pt_i_manga_1 (list 0 (* _largo_talle 1.5 ) )
     pt_i_manga_2 (list (- _contorno_sisa 10) (cadr pt_i_manga_1) )
-    pt_i_canesu (list (+ (- _contorno_sisa 10) (car pt_i_manga_2) ) (cadr pt_i_manga_2) )
-    pt_i_tirilla (list 0 (+ (cadr pt_i_manga_1) (+ (+ _largo_manga _alto_sisa ) 4) ) )
+    pt_i_canesu (list (+ (- _contorno_sisa 10) (car pt_i_manga_2) ) (cadr pt_i_manga_1) )
+    pt_i_tirilla (list 0 (+ (cadr pt_i_manga_1) (+ (+ _largo_manga (/ _alto_sisa 3) ) 4) ) )
     pt_i_solapa (list _contorno_cuello (cadr pt_i_tirilla) )
     )
   (crear_capa "trasero" 1)
@@ -101,15 +101,15 @@
 
   (crear_capa "manga_der" 5)
   (capa "manga_der")
-  (manga pt_i_manga21 _contorno_sisa _alto_sisa _largo_manga)
+  (manga pt_i_manga_2 _contorno_sisa _alto_sisa _largo_manga)
 
   (crear_capa "canesu" 6)
   (capa "canesu")
-  (canesu pt_i_canesu _contorno_cuello _ancho_hombro _contorno_torax _alto_canesu)
+  (canesu pt_i_canesu _contorno_cuello _ancho_hombro _contorno_torax _alto_sisa)
 
   (crear_capa "tirilla" 7)
   (capa "tirilla")
-  (tirilla pt_i_trasero _contorno_cuello)
+  (tirilla pt_i_tirilla _contorno_cuello)
 
   (crear_capa "solapa" 8)
   (capa "solapa")

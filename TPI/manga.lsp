@@ -6,17 +6,17 @@
     ancho (- contorno_sisa 10)
     alto (+ (+ largo_manga alto_sisa ) 4)
     )
-	;        pt3
-	;    pt2     pt4
-	;pta pt1        ptb
+	;        ptc
+	;    ptb     ptd
+	;pta pta_aux    pte
   (setq
     pt_f (list (+(car pt_i) ancho) (+(cadr pt_i) alto) )
 
     pta (list (car pt_i) (+ (cadr pt_i) (+ largo_manga 4) ) )
     pta_aux (list (+ (car pt_i) (* ancho 0.25)) (+ (cadr pt_i) (+ largo_manga 4) ) )
-    ptb (list (+ (car pt_i) (* ancho 0.25)) (+ (cadr pta) (/ alto_sisa 2) ) )
-    ptc (list (+ (car pt_i) (* ancho 0.50)) (+ (cadr pta) alto_sisa ) )
-    ptd (list (+ (car pt_i) (* ancho 0.75)) (+ (cadr pta) (/ alto_sisa 2) ) )
+    ptb (list (+ (car pt_i) (* ancho 0.25)) (+ (cadr pta) (/ alto_sisa 6) ) )
+    ptc (list (+ (car pt_i) (* ancho 0.50)) (+ (cadr pta) (/ alto_sisa 3) ) )
+    ptd (list (+ (car pt_i) (* ancho 0.75)) (+ (cadr pta) (/ alto_sisa 6) ) )
     pte (list (car pt_f) (+ (cadr pt_i) (+ largo_manga 4) ) )
 
     pt1 (list (+ (car pt_i) (- ancho 2)) (+ (cadr pt_i) 4) )
